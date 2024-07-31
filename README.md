@@ -59,7 +59,7 @@ export const dbConfig: DynamoDBClientConfig = {
     },
 };
 
-export {
+export const {
     dynamodb,
     getItem,
     putItem,
