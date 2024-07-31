@@ -1,0 +1,33 @@
+{
+  "name": "dynamodb-helpers",
+  "version": "1.0.0",
+  "description": "Utility functions for making AWS DynamoDB SDK easy to use.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangchristina/dynamodb-helpers.git"
+  },
+  "keywords": [
+    "aws",
+    "dynamodb"
+  ],
+  "author": "Christina Yang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yangchristina/dynamodb-helpers/issues"
+  },
+  "homepage": "https://github.com/yangchristina/dynamodb-helpers#readme",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.621.0",
+    "@aws-sdk/lib-dynamodb": "^3.621.0"
+  }
+}
