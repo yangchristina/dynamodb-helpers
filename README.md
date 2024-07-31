@@ -71,7 +71,7 @@ export const {
     updateItem,
     client,
     ddbDocClient,
- } = createDynamoDBHelpers(dbConfig, translateConfig);
+} = createDynamoDBHelpers(dbConfig, translateConfig);
 ```
 
 Now simply import a function to use it!
@@ -90,4 +90,11 @@ await updateItem(process.env.TABLE_NAME!, { pk: '1', sk: 'John Doe' }, {
     }
 });
 
+```
+
+## Types
+Import types from the package like so:
+
+```ts
+import { UpdateItemParams } from 'dynamodb-helpers';
 ```
