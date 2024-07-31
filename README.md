@@ -3,8 +3,11 @@
 ## Installation
 
 ```bash
-npm install dynamodb-helpers
+npm install dynamodb-helpers @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
 ```
+
+> [!NOTE]
+> `@aws-sdk/client-dynamodb` and `@aws-sdk/lib-dynamodb` are peer dependencies.
 
 ## Setup
 
