@@ -27,3 +27,7 @@ export interface UpdateItemOptions {
     debug?: boolean;
     throwConditionalFail?: boolean;
 }
+
+export interface UpdateExpressionOptions {
+    generateRandomId?: () => string;
+}

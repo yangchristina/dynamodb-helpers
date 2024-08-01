@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "release": "npm run build && npm version patch && npm publish",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,8 @@
   "homepage": "https://github.com/yangchristina/dynamodb-helpers#readme",
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   },
   "peerDependencies": {
     "@aws-sdk/client-dynamodb": "3.x",
