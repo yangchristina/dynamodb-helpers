@@ -1,6 +1,6 @@
 {
   "name": "dynamodb-helpers",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Utility functions for making AWS DynamoDB SDK easy to use.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
