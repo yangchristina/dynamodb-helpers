@@ -4,6 +4,17 @@
   "description": "Utility functions for making AWS DynamoDB SDK easy to use.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "browser": "dist/client.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./client": {
+      "import": "./dist/client.js",
+      "require": "./dist/client.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "release": "npm run build && npm version patch && npm publish",
