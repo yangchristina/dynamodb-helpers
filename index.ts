@@ -434,7 +434,6 @@ const createDynamoDBHelpers = (dbConfig: DynamoDBClientConfig, translateConfig?:
     };
 };
 
-export default createDynamoDBHelpers;
-
+export { createDynamoDBHelpers };
 export type * from "./types";
 export { handleProjectionExpression, randomId } from "./utils";
