@@ -1,2 +1,2 @@
-export { createDynamoDBHelpers } from './server';
-export * from "./client";
+export { createDynamoDBHelpers } from './server.js';
+export * from "./client.js";

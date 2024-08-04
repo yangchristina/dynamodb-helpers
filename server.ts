@@ -25,13 +25,13 @@ import {
     ScanCommand,
     TranslateConfig,
 } from "@aws-sdk/lib-dynamodb"; // ES6 import
-import type { QueryOptions, UpdateItemOptions, UpdateItemParams } from "./types";
-import { isEmpty } from "./utils";
+import type { QueryOptions, UpdateItemOptions, UpdateItemParams } from "./types.js";
+import { isEmpty } from "./utils.js";
 import {
     updateAddDeleteExpressions,
     updateRemoveExpressions,
     updateSetExpressions,
-} from "./updateExpressions";
+} from "./updateExpressions.js";
 
 export const DB_RESERVED_WORDS = new Set([
     "name",

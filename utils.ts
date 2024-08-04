@@ -1,4 +1,4 @@
-import type { UpdateExpressionOptions } from "./types";
+import type { UpdateExpressionOptions } from "./types.js";
 
 export const isEmpty = (obj: any) => {
     if (obj === null || obj === undefined) return true;

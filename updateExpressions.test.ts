@@ -1,4 +1,4 @@
-import { ADD_ON, updateSetExpressions } from "updateExpressions";
+import { ADD_ON, updateSetExpressions } from "./updateExpressions";
 import { expect, test } from "vitest";
 
 // Handles updates with empty set, listAppend, and setIfNotExists objects

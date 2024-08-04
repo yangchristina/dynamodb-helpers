@@ -1,5 +1,5 @@
-import { randomId, handlePath, isEmpty } from "./utils";
-import { UpdateItemParams } from "./types";
+import { randomId, handlePath, isEmpty } from "./utils.js";
+import { UpdateItemParams } from "./types.js";
 
 export const ADD_ON = "AO1";
 export const updateSetExpressions = (
