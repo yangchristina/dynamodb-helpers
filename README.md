@@ -34,7 +34,7 @@ export {
 
 ```ts
 // lib/dynamodb.ts
-import createDynamoDBHelpers from 'dynamodb-helpers';
+import { createDynamoDBHelpers } from 'dynamodb-helpers';
 
 const marshallOptions = {
     // Whether to automatically convert empty strings, blobs, and sets to `null`.
