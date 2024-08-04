@@ -1,4 +1,4 @@
-import { UpdateExpressionOptions } from "types";
+import type { UpdateExpressionOptions } from "./types";
 
 export const isEmpty = (obj: any) => {
     if (obj === null || obj === undefined) return true;
@@ -54,3 +54,20 @@ export function handlePath(
         .map((y) => toKeyAndExpName(y, ExpressionAttributeNames, options))
         .join(".");
 }
+
+export const attributeNameToPath = (attributeName: string) => {
+    const arr: (string | number)[] = [];
+    const components = attributeName.split(".");
+    for (let c of components) {
+        const regex = /\[\d+\]/g;
+        const split = c.split(regex);
+        const matches = c.match(regex)?.map((x) => parseInt(x.slice(1, -1)));
+        for (let i = 0; i < split.length; i++) {
+            arr.push(split[i]);
+            if (matches && i < matches.length) {
+                arr.push(matches[i]);
+            }
+        }
+    }
+    return arr;
+};
