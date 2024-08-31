@@ -140,6 +140,15 @@ const createDynamoDBHelpers = (dbConfig: DynamoDBClientConfig, translateConfig?:
         }
     };
 
+    /**
+     * Queries items based on either their sk prefix or full sk.
+     * To query for all items with just the pk, set sk to undefined
+     * @param pk
+     * @param sk
+     * @param TableName
+     * @param options
+     * @returns
+     */
     const queryStartsWith = async (
         pk: { name: string; value: string | number },
         sk: { name: string; startsWith?: string; equals?: string } | undefined,
@@ -183,6 +192,11 @@ const createDynamoDBHelpers = (dbConfig: DynamoDBClientConfig, translateConfig?:
         }
     };
 
+    /**
+     * Dynamodb's batchWrite, but without the limit of 25 items (gets all items)
+     * @param params BatchWriteCommandInput
+     * @returns
+     */
     async function batchWriteAll(params: BatchWriteCommandInput) {
         if (!params.RequestItems) return;
         const tables = Object.keys(params.RequestItems);
@@ -235,6 +249,11 @@ const createDynamoDBHelpers = (dbConfig: DynamoDBClientConfig, translateConfig?:
         }
     }
 
+    /**
+     * dynamodb's query, but without max limit of 25 (get's all items)
+     * @param params
+     * @returns
+     */
     const queryAllItems = async <T>(params: QueryCommandInput) => {
         let items: any[] = [];
         try {
