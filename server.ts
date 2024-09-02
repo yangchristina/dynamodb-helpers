@@ -25,7 +25,11 @@ import {
     ScanCommand,
     TranslateConfig,
 } from "@aws-sdk/lib-dynamodb"; // ES6 import
-import type { QueryOptions, UpdateItemOptions, UpdateItemParams } from "./types.js";
+import type {
+    QueryOptions,
+    UpdateItemOptions,
+    UpdateItemParams,
+} from "./types.js";
 import { isEmpty } from "./utils.js";
 import {
     updateAddDeleteExpressions,
@@ -41,7 +45,10 @@ export const DB_RESERVED_WORDS = new Set([
     // 'duration'
 ]);
 
-const createDynamoDBHelpers = (dbConfig: DynamoDBClientConfig, translateConfig?: TranslateConfig) => {
+const createDynamoDBHelpers = (
+    dbConfig: DynamoDBClientConfig,
+    translateConfig?: TranslateConfig
+) => {
     const client = new DynamoDBClient(dbConfig);
     const ddbDocClient = DynamoDBDocumentClient.from(client, translateConfig); // client is DynamoDB client
 
@@ -95,13 +102,17 @@ const createDynamoDBHelpers = (dbConfig: DynamoDBClientConfig, translateConfig?:
     const putItem = async (
         Item: Record<string, any>,
         TableName = process.env.TABLE_NAME,
-        options?: Omit<PutCommandInput, "Item" | "TableName">
+        options?: Omit<PutCommandInput, "Item" | "TableName"> & {
+            preventOverwrite?: boolean;
+        }
     ) => {
+        const { preventOverwrite, ...inputs } = options || {};
         try {
             return await dynamodb.put({
                 TableName,
                 Item,
-                ...options,
+                ...(preventOverwrite && { ConditionExpression: "attribute_not_exists(pk)" }),
+                ...inputs,
             });
         } catch (error) {
             console.log("put item", Item);
