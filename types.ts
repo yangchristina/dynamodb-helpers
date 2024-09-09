@@ -5,16 +5,16 @@ export interface QueryOptions {
     Limit?: number;
 }
 
-export interface UpdateItemParams {
+export interface UpdateItemParams<T extends {} = Record<string, any>> {
     // only set needs validation i think
-    set?: Record<string, any>; // edit or change an existing item
+    set?: Partial<T>; // edit or change an existing item
     remove?: string[]; // remove from a list, remove attributes
     add?: Record<
         string, number | Set<string> | Array<string> | Set<number> | Array<number>
     >; // add to a set
     delete?: Record<string, Set<string> | Array<string>>; // delete from a set
     listAppend?: Record<string, Array<any>>; // append to a list
-    setIfNotExists?: Record<string, any>; // set if it doesn't exist
+    setIfNotExists?: Record<string, Partial<T>>; // set if it doesn't exist
 }
 
 export interface UpdateItemOptions {
