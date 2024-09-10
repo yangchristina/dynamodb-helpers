@@ -14,7 +14,7 @@ export interface UpdateItemParams<T extends {} = Record<string, any>> {
     >; // add to a set
     delete?: Record<string, Set<string> | Array<string>>; // delete from a set
     listAppend?: Record<string, Array<any>>; // append to a list
-    setIfNotExists?: Record<string, Partial<T>>; // set if it doesn't exist
+    setIfNotExists?: Partial<T>; // set if it doesn't exist
 }
 
 export interface UpdateItemOptions {
