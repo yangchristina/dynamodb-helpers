@@ -1,5 +1,6 @@
+import { QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 
-export interface QueryOptions {
+export interface QueryOptions extends Omit<QueryCommandInput, 'TableName' | 'KeyConditionExpression' | 'ExpressionAttributeNames' | 'ExpressionAttributeValues'> {
     ProjectionExpression?: string;
     IndexName?: string;
     Limit?: number;
