@@ -92,8 +92,7 @@ const createDynamoDBHelpers = (
             return res.Item;
         } catch (error) {
             if (!(error instanceof Error)) throw new Error(String(error));
-            console.log("get item");
-            console.error(error.message);
+            console.error("get item", Key, error.message);
             throw error;
             // return undefined
         }
