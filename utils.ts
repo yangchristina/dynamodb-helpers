@@ -28,7 +28,7 @@ export function toKeyAndExpName(
     const id = options?.generateRandomId ? options.generateRandomId() : randomId(5);
     const [name, ...rest] = val.split("[");
     // const name = val.split('[')[0]
-    const fixedName = name.split("/")[0] + id;
+    const fixedName = name.split("/")[0].replace(/[-#]/, '') + id;
     ExpressionAttributeNames["#" + fixedName] = name;
     return "#" + [fixedName, ...rest].join("["); // val -> name
 }
