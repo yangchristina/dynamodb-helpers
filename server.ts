@@ -110,7 +110,9 @@ const createDynamoDBHelpers = (
             return await dynamodb.put({
                 TableName,
                 Item,
-                ...(preventOverwrite && { ConditionExpression: "attribute_not_exists(pk)" }),
+                ...(preventOverwrite && {
+                    ConditionExpression: "attribute_not_exists(pk)",
+                }),
                 ...inputs,
             });
         } catch (error) {
@@ -353,10 +355,10 @@ const createDynamoDBHelpers = (
         return items;
     };
 
-    const updateItem = async (
+    const updateItem = async <T extends {} = Record<string, any>>(
         TableName: string,
         Key: Record<string, string>,
-        updates: UpdateItemParams,
+        updates: UpdateItemParams<T>,
         preventNewItem = true,
         options?: UpdateItemOptions
     ) => {
@@ -365,7 +367,7 @@ const createDynamoDBHelpers = (
         // console.log(updates)
         for (let key of Object.keys(Key)) {
             if (updates.set && key in updates.set) {
-                delete updates.set[key];
+                delete updates.set[key as keyof typeof updates.set];
             }
         }
 
