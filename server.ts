@@ -248,7 +248,7 @@ const createDynamoDBHelpers = (
                         "in last",
                         count,
                         Object.keys(query.RequestItems).length,
-                        query
+                        JSON.stringify(query, null, 2)
                     );
                     console.log(e);
                 }
