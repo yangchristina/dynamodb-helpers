@@ -205,6 +205,57 @@ const createDynamoDBHelpers = (
     };
 
     /**
+     * Queries items based on a min value, max value, or both.
+     * @param pk
+     * @param sk
+     * @param TableName
+     * @param options
+     * @returns
+     */
+    const queryByComparison = async (
+        pk: { name: string; value: string | number },
+        sk: { name: string; min?: string | number; max?: string | number },
+        TableName: string,
+        options?: QueryOptions
+    ) => {
+        try {
+            let KeyConditionExpression = "#userId = :userId";
+            if (sk.min && sk.max) {
+                KeyConditionExpression += ` AND #target BETWEEN :minV AND :maxV`;
+            } else if (sk.min) {
+                KeyConditionExpression += " AND #target >= :minV";
+            } else if (sk.max) {
+                KeyConditionExpression += " AND #target <= :maxV";
+            } else {
+                throw new Error("sk.min or sk.max is required");
+            }
+
+            const res = await dynamodb.query({
+                TableName,
+                KeyConditionExpression,
+                ExpressionAttributeNames: {
+                    "#userId": pk.name,
+                    "#target": sk.name,
+                },
+                ExpressionAttributeValues: {
+                    ":userId": pk.value,
+                    ...(sk.min !== undefined && { ":minV": sk.min }),
+                    ...(sk.max !== undefined && { ":maxV": sk.max }),
+                },
+                ...options,
+            });
+
+            return res.Items;
+        } catch (error) {
+            if (!(error instanceof Error)) throw new Error(String(error));
+            console.log("queryByComparison error");
+            console.error(error.message);
+            throw error;
+            // return undefined
+        }
+    };
+
+    /**
      * Dynamodb's batchWrite, but without the limit of 25 items (gets all items)
      * @param params BatchWriteCommandInput
      * @returns
@@ -455,6 +506,7 @@ const createDynamoDBHelpers = (
         getItem,
         putItem,
         queryStartsWith,
+        queryByComparison,
         batchWriteAll,
         queryAllItems,
         scanAll,
