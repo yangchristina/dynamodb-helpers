@@ -312,6 +312,19 @@ const createDynamoDBHelpers = (
         }
     }
 
+    /** Puts all items given into table. Only supports adding items into same table. */
+    async function batchPutItems(
+        itemsToPut: Record<string, any>[],
+        TableName: string
+    ) {
+        const params = {
+            RequestItems: {
+                [TableName]: itemsToPut,
+            },
+        };
+        await batchWriteAll(params);
+    }
+
     /**
      * dynamodb's query, but without max limit of 25 (get's all items)
      * @param params
@@ -508,6 +521,7 @@ const createDynamoDBHelpers = (
         queryStartsWith,
         queryByComparison,
         batchWriteAll,
+        batchPutItems,
         queryAllItems,
         scanAll,
         batchGetItem,
