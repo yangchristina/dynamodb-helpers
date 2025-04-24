@@ -133,13 +133,15 @@ const createDynamoDBHelpers = (
             const res = await dynamodb.query({
                 TableName,
                 KeyConditionExpression,
+                ...options,
                 ExpressionAttributeNames: {
+                    ...options?.ExpressionAttributeNames,
                     "#userId": pk.name,
                 },
                 ExpressionAttributeValues: {
+                    ...options?.ExpressionAttributeValues,
                     ":userId": pk.value,
                 },
-                ...options,
             });
 
             return res.Items;
@@ -182,16 +184,18 @@ const createDynamoDBHelpers = (
             const res = await dynamodb.query({
                 TableName,
                 KeyConditionExpression,
+                ...options,
                 ExpressionAttributeNames: {
+                    ...options?.ExpressionAttributeNames,
                     "#userId": pk.name,
                     "#id": sk.name,
                 },
                 ExpressionAttributeValues: {
+                    ...options?.ExpressionAttributeValues,
                     ":userId": pk.value,
                     ...(sk.startsWith && { ":idPrefix": sk.startsWith }),
                     ...(sk.equals && { ":idFull": sk.equals }),
                 },
-                ...options,
             });
 
             return res.Items;
@@ -233,16 +237,18 @@ const createDynamoDBHelpers = (
             const res = await dynamodb.query({
                 TableName,
                 KeyConditionExpression,
+                ...options,
                 ExpressionAttributeNames: {
+                    ...options?.ExpressionAttributeNames,
                     "#userId": pk.name,
                     "#target": sk.name,
                 },
                 ExpressionAttributeValues: {
+                    ...options?.ExpressionAttributeValues,
                     ":userId": pk.value,
                     ...(sk.min !== undefined && { ":minV": sk.min }),
                     ...(sk.max !== undefined && { ":maxV": sk.max }),
                 },
-                ...options,
             });
 
             return res.Items;
