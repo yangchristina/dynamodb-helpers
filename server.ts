@@ -494,7 +494,7 @@ const createDynamoDBHelpers = (
             ...(!isEmpty(ExpressionAttributeValues) && {
                 ExpressionAttributeValues,
             }),
-            ...(preventNewItem && {
+            ...(preventNewItem && updates.allowCreatingNewItem !== true && {
                 ConditionExpression: `attribute_exists(${primaryKey})`,
             }),
             ...(options?.ReturnValues && {
