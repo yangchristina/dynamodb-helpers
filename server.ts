@@ -80,7 +80,7 @@ const createDynamoDBHelpers = (
         scan: async (params: ScanCommandInput) =>
             await ddbDocClient.send(new ScanCommand(params)),
     };
-    const getItem = async <T extends Record<string, any>>(
+    const getItem = async <T extends Record<string, any> = Record<string, any>>(
         Key: Record<string, string>,
         TableName = process.env.TABLE_NAME
     ) => {
@@ -494,9 +494,10 @@ const createDynamoDBHelpers = (
             ...(!isEmpty(ExpressionAttributeValues) && {
                 ExpressionAttributeValues,
             }),
-            ...(preventNewItem && updates.allowCreatingNewItem !== true && {
-                ConditionExpression: `attribute_exists(${primaryKey})`,
-            }),
+            ...(preventNewItem &&
+                updates.allowCreatingNewItem !== true && {
+                    ConditionExpression: `attribute_exists(${primaryKey})`,
+                }),
             ...(options?.ReturnValues && {
                 ReturnValues: options.ReturnValues,
             }),
