@@ -80,7 +80,7 @@ const createDynamoDBHelpers = (
         scan: async (params: ScanCommandInput) =>
             await ddbDocClient.send(new ScanCommand(params)),
     };
-    const getItem = async (
+    const getItem = async <T extends Record<string, any>>(
         Key: Record<string, string>,
         TableName = process.env.TABLE_NAME
     ) => {
@@ -89,7 +89,7 @@ const createDynamoDBHelpers = (
                 TableName,
                 Key,
             });
-            return res.Item;
+            return res.Item as T | undefined;
         } catch (error) {
             if (!(error instanceof Error)) throw new Error(String(error));
             console.error("get item", Key, error.message);
