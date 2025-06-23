@@ -254,8 +254,13 @@ const createDynamoDBHelpers = (
             return res.Items;
         } catch (error) {
             if (!(error instanceof Error)) throw new Error(String(error));
-            console.log("queryByComparison error");
-            console.error(error.message);
+            console.error("queryByComparison error", {
+                error,
+                pk,
+                sk,
+                TableName,
+                errorMessage: error.message,
+            });
             throw error;
             // return undefined
         }
