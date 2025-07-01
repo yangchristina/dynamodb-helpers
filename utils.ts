@@ -8,7 +8,8 @@ export const isEmpty = (obj: any) => {
 };
 export function randomId(length = 8) {
     let result = "";
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
@@ -25,21 +26,29 @@ export function toKeyAndExpName(
     ExpressionAttributeNames: Record<string, string>,
     options?: UpdateExpressionOptions
 ) {
-    const id = options?.generateRandomId ? options.generateRandomId() : randomId(5);
+    const id = options?.generateRandomId
+        ? options.generateRandomId()
+        : randomId(5);
     const [name, ...rest] = val.split("[");
     // const name = val.split('[')[0]
-    const fixedName = name.split("/")[0].replace(/[-#]/g, '') + id;
+    const fixedName = name.split("/")[0].replace(/[-#]/g, "") + id;
     ExpressionAttributeNames["#" + fixedName] = name;
     return "#" + [fixedName, ...rest].join("["); // val -> name
 }
 
-export function handleProjectionExpression(
-    ExpressionAttributeNames: Record<string, string>,
-    ProjectionExpression: string,
-    options?: UpdateExpressionOptions
-) {
+export function handleProjectionExpression({
+    ExpressionAttributeNames,
+    ProjectionExpression,
+    options,
+}: {
+    ExpressionAttributeNames: Record<string, string>;
+    ProjectionExpression: string;
+    options?: UpdateExpressionOptions;
+}) {
     return ProjectionExpression.split(",")
-        .map((y) => toKeyAndExpName(y.trim(), ExpressionAttributeNames, options))
+        .map((y) =>
+            toKeyAndExpName(y.trim(), ExpressionAttributeNames, options)
+        )
         .join(",");
 }
 // I like this function:)

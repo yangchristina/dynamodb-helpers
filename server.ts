@@ -30,7 +30,7 @@ import type {
     UpdateItemOptions,
     UpdateItemParams,
 } from "./types.js";
-import { isEmpty } from "./utils.js";
+import { handleProjectionExpression, isEmpty } from "./utils.js";
 import {
     updateAddDeleteExpressions,
     updateRemoveExpressions,
@@ -130,14 +130,24 @@ const createDynamoDBHelpers = (
         try {
             let KeyConditionExpression = "#userId = :userId";
 
+            const ExpressionAttributeNames = {
+                ...options?.ExpressionAttributeNames,
+                "#userId": pk.name,
+            };
+
+            const ProjectionExpression =
+                options?.ProjectionExpression &&
+                handleProjectionExpression({
+                    ProjectionExpression: options.ProjectionExpression,
+                    ExpressionAttributeNames,
+                });
+
             const res = await dynamodb.query({
                 TableName,
                 KeyConditionExpression,
                 ...options,
-                ExpressionAttributeNames: {
-                    ...options?.ExpressionAttributeNames,
-                    "#userId": pk.name,
-                },
+                ProjectionExpression,
+                ExpressionAttributeNames,
                 ExpressionAttributeValues: {
                     ...options?.ExpressionAttributeValues,
                     ":userId": pk.value,
@@ -181,15 +191,25 @@ const createDynamoDBHelpers = (
                 KeyConditionExpression += " AND #id = :idFull";
             }
 
+            const ExpressionAttributeNames = {
+                ...options?.ExpressionAttributeNames,
+                "#userId": pk.name,
+                "#id": sk.name,
+            };
+
+            const ProjectionExpression =
+                options?.ProjectionExpression &&
+                handleProjectionExpression({
+                    ProjectionExpression: options.ProjectionExpression,
+                    ExpressionAttributeNames,
+                });
+
             const res = await dynamodb.query({
                 TableName,
                 KeyConditionExpression,
                 ...options,
-                ExpressionAttributeNames: {
-                    ...options?.ExpressionAttributeNames,
-                    "#userId": pk.name,
-                    "#id": sk.name,
-                },
+                ProjectionExpression,
+                ExpressionAttributeNames,
                 ExpressionAttributeValues: {
                     ...options?.ExpressionAttributeValues,
                     ":userId": pk.value,
