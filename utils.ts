@@ -56,7 +56,7 @@ export function handleProjectionExpression({
 export function handlePath(
     path: string,
     ExpressionAttributeNames: Record<string, any>,
-    options?: UpdateExpressionOptions
+    options: UpdateExpressionOptions | undefined
 ) {
     return path
         .split(".")

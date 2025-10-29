@@ -1,14 +1,16 @@
 import { randomId, handlePath, isEmpty } from "./utils.js";
 import { UpdateItemParams } from "./types.js";
 
+type Options = { generateRandomId?: () => string }
+
 export const ADD_ON = "AO1";
 export const updateSetExpressions = (
-    updates: Pick<UpdateItemParams, "set" | "listAppend" | "setIfNotExists">,
+    updates: Pick<UpdateItemParams, "set" | "listAppend" | "setIfNotExists" | "increment" | "decrement">,
     ExpressionAttributeValues: Record<string, any>,
     ExpressionAttributeNames: Record<string, any>,
-    options?: { generateRandomId?: () => string }
+    options?: Options
 ): string => {
-    const { set, listAppend, setIfNotExists } = updates;
+    const { set, listAppend, setIfNotExists, increment, decrement } = updates;
 
     const generateRandomId = options?.generateRandomId || randomId;
 
@@ -31,7 +33,7 @@ export const updateSetExpressions = (
     const list = listAppend
         ? Object.keys(listAppend).map((path) => {
               const id = generateRandomId();
-              const name = handlePath(path, ExpressionAttributeNames);
+              const name = handlePath(path, ExpressionAttributeNames, { generateRandomId });
               const valKey = `:arr${id}`;
               ExpressionAttributeValues[valKey] = listAppend[path];
               ExpressionAttributeValues[":empty_list"] = [];
@@ -39,7 +41,27 @@ export const updateSetExpressions = (
           })
         : [];
 
-    return "set " + [...str, ...list, ...ifNotExists].join(", ");
+    const incrementExpressions = increment
+        ? Object.keys(increment).map((path) => {
+              const id = generateRandomId();
+              const name = handlePath(path, ExpressionAttributeNames, { generateRandomId });
+              const valKey = `:inc${path}${id}`;
+              ExpressionAttributeValues[valKey] = increment[path];
+              return `${name} = ${name} + ${valKey}`;
+          })
+        : [];
+
+    const decrementExpressions = decrement
+        ? Object.keys(decrement).map((path) => {
+              const id = generateRandomId();
+              const name = handlePath(path, ExpressionAttributeNames, { generateRandomId });
+              const valKey = `:dec${path}${id}`;
+              ExpressionAttributeValues[valKey] = decrement[path];
+              return `${name} = ${name} - ${valKey}`;
+          })
+        : [];
+
+    return "set " + [...str, ...list, ...ifNotExists, ...incrementExpressions, ...decrementExpressions].join(", ");
 
     function handleSet(key: string, i: number, set: Record<string, any>) {
         const id = generateRandomId();
@@ -51,7 +73,8 @@ export const updateSetExpressions = (
 
 export const updateRemoveExpressions = (
     attributes: string[],
-    ExpressionAttributeNames: Record<string, any>
+    ExpressionAttributeNames: Record<string, any>,
+    options?: Options
 ) => {
     if (
         !Array.isArray(attributes) ||
@@ -63,7 +86,7 @@ export const updateRemoveExpressions = (
         "remove " +
         attributes
             .map((x) => {
-                return handlePath(x, ExpressionAttributeNames);
+                return handlePath(x, ExpressionAttributeNames, options);
             })
             .join(", ");
 
@@ -77,17 +100,18 @@ export const updateAddDeleteExpressions = (
         number | Set<string> | Array<string> | Set<number> | Array<number>
     >,
     ExpressionAttributeValues: Record<string, any>,
-    ExpressionAttributeNames: Record<string, any>
+    ExpressionAttributeNames: Record<string, any>,
+    options?: Options
 ) => {
     if (isEmpty(pathValuesDict) || (op !== "add" && op !== "delete")) return;
     const exp = Object.keys(pathValuesDict)
         .map((path) => {
-            const id = randomId();
+            const id = options?.generateRandomId?.() ?? randomId();
             const valKey = ":p" + id;
             const value = pathValuesDict[path];
             ExpressionAttributeValues[valKey] =
                 typeof value === "number" ? value : new Set([...value]);
-            return `${handlePath(path, ExpressionAttributeNames)} ${valKey}`;
+            return `${handlePath(path, ExpressionAttributeNames, options)} ${valKey}`;
         })
         .join(", ");
     const UpdateExpression = `${op} ${exp}`;
