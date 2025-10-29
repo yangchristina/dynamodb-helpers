@@ -1,4 +1,4 @@
-import { ADD_ON, updateSetExpressions } from "./updateExpressions";
+import { ADD_ON, updateSetExpressions, updateAddDeleteExpressions } from "./updateExpressions";
 import { expect, test } from "vitest";
 
 // Handles updates with empty set, listAppend, and setIfNotExists objects
@@ -157,4 +157,80 @@ test('should handle mixed set, increment, and decrement operations', () => {
         ":incviewsrandomId": 1,
         ":decstockrandomId": 2,
     });
+});
+
+// Test add operation with empty set filtered out
+test("should filter out empty sets in add operations", () => {
+    const pathValuesDict = {
+        tags: new Set(["tag1", "tag2"]),
+        categories: new Set<string>(), // empty set
+    };
+    const ExpressionAttributeValues = {};
+    const ExpressionAttributeNames = {};
+
+    const result = updateAddDeleteExpressions(
+        "add",
+        pathValuesDict,
+        ExpressionAttributeValues,
+        ExpressionAttributeNames,
+        {
+            generateRandomId() {
+                return "randomId";
+            },
+        }
+    );
+
+    // Only 'tags' should be in the expression since 'categories' is empty
+    expect(result).toContain("tags");
+    expect(result).not.toContain("categories");
+    expect(ExpressionAttributeValues).toHaveProperty(":prandomId");
+    // Empty set should not be in the values
+    const values = Object.values(ExpressionAttributeValues);
+    expect(values.some((v) => v instanceof Set && v.size === 0)).toBe(false);
+});
+
+// Test delete operation with empty array filtered out
+test("should filter out empty arrays in delete operations", () => {
+    const pathValuesDict = {
+        colors: ["red", "blue"],
+        sizes: [], // empty array
+    };
+    const ExpressionAttributeValues = {};
+    const ExpressionAttributeNames = {};
+
+    const result = updateAddDeleteExpressions(
+        "delete",
+        pathValuesDict,
+        ExpressionAttributeValues,
+        ExpressionAttributeNames,
+        {
+            generateRandomId() {
+                return "randomId";
+            },
+        }
+    );
+
+    // Only 'colors' should be in the expression since 'sizes' is empty
+    expect(result).toContain("colors");
+    expect(result).not.toContain("sizes");
+});
+
+// Test add/delete when all sets are empty returns undefined
+test("should return undefined when all sets are empty", () => {
+    const pathValuesDict = {
+        tags: new Set<string>(),
+        categories: new Set<string>(),
+    };
+    const ExpressionAttributeValues = {};
+    const ExpressionAttributeNames = {};
+
+    const result = updateAddDeleteExpressions(
+        "add",
+        pathValuesDict,
+        ExpressionAttributeValues,
+        ExpressionAttributeNames
+    );
+
+    expect(result).toBeUndefined();
+    expect(ExpressionAttributeValues).toEqual({});
 });

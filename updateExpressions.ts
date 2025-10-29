@@ -71,6 +71,12 @@ export const updateSetExpressions = (
     }
 };
 
+const isEmptySet = (value: any): boolean => {
+    if (value instanceof Set) return value.size === 0;
+    if (Array.isArray(value)) return value.length === 0;
+    return false;
+};
+
 export const updateRemoveExpressions = (
     attributes: string[],
     ExpressionAttributeNames: Record<string, any>,
@@ -104,7 +110,11 @@ export const updateAddDeleteExpressions = (
     options?: Options
 ) => {
     if (isEmpty(pathValuesDict) || (op !== "add" && op !== "delete")) return;
-    const exp = Object.keys(pathValuesDict)
+    const filteredPaths = Object.keys(pathValuesDict).filter(
+        (path) => !isEmptySet(pathValuesDict[path])
+    );
+    if (filteredPaths.length === 0) return;
+    const exp = filteredPaths
         .map((path) => {
             const id = options?.generateRandomId?.() ?? randomId();
             const valKey = ":p" + id;
