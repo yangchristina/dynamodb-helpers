@@ -1,11 +1,14 @@
 import { randomId, handlePath, isEmpty } from "./utils.js";
 import { UpdateItemParams } from "./types.js";
 
-type Options = { generateRandomId?: () => string }
+type Options = { generateRandomId?: () => string };
 
 export const ADD_ON = "AO1";
 export const updateSetExpressions = (
-    updates: Pick<UpdateItemParams, "set" | "listAppend" | "setIfNotExists" | "increment" | "decrement">,
+    updates: Pick<
+        UpdateItemParams,
+        "set" | "listAppend" | "setIfNotExists" | "increment" | "decrement"
+    >,
     ExpressionAttributeValues: Record<string, any>,
     ExpressionAttributeNames: Record<string, any>,
     options?: Options
@@ -33,7 +36,9 @@ export const updateSetExpressions = (
     const list = listAppend
         ? Object.keys(listAppend).map((path) => {
               const id = generateRandomId();
-              const name = handlePath(path, ExpressionAttributeNames, { generateRandomId });
+              const name = handlePath(path, ExpressionAttributeNames, {
+                  generateRandomId,
+              });
               const valKey = `:arr${id}`;
               ExpressionAttributeValues[valKey] = listAppend[path];
               ExpressionAttributeValues[":empty_list"] = [];
@@ -44,7 +49,9 @@ export const updateSetExpressions = (
     const incrementExpressions = increment
         ? Object.keys(increment).map((path) => {
               const id = generateRandomId();
-              const name = handlePath(path, ExpressionAttributeNames, { generateRandomId });
+              const name = handlePath(path, ExpressionAttributeNames, {
+                  generateRandomId,
+              });
               const valKey = `:inc${path}${id}`;
               ExpressionAttributeValues[valKey] = increment[path];
               return `${name} = ${name} + ${valKey}`;
@@ -54,18 +61,31 @@ export const updateSetExpressions = (
     const decrementExpressions = decrement
         ? Object.keys(decrement).map((path) => {
               const id = generateRandomId();
-              const name = handlePath(path, ExpressionAttributeNames, { generateRandomId });
+              const name = handlePath(path, ExpressionAttributeNames, {
+                  generateRandomId,
+              });
               const valKey = `:dec${path}${id}`;
               ExpressionAttributeValues[valKey] = decrement[path];
               return `${name} = ${name} - ${valKey}`;
           })
         : [];
 
-    return "set " + [...str, ...list, ...ifNotExists, ...incrementExpressions, ...decrementExpressions].join(", ");
+    return (
+        "set " +
+        [
+            ...ifNotExists,
+            ...str,
+            ...list,
+            ...incrementExpressions,
+            ...decrementExpressions,
+        ].join(", ")
+    );
 
     function handleSet(key: string, i: number, set: Record<string, any>) {
         const id = generateRandomId();
-        const name = handlePath(key, ExpressionAttributeNames, { generateRandomId });
+        const name = handlePath(key, ExpressionAttributeNames, {
+            generateRandomId,
+        });
         ExpressionAttributeValues[`:${id + i}${ADD_ON}valset`] = set[key];
         return { name, id };
     }
@@ -121,7 +141,11 @@ export const updateAddDeleteExpressions = (
             const value = pathValuesDict[path];
             ExpressionAttributeValues[valKey] =
                 typeof value === "number" ? value : new Set([...value]);
-            return `${handlePath(path, ExpressionAttributeNames, options)} ${valKey}`;
+            return `${handlePath(
+                path,
+                ExpressionAttributeNames,
+                options
+            )} ${valKey}`;
         })
         .join(", ");
     const UpdateExpression = `${op} ${exp}`;
