@@ -15,7 +15,10 @@ export interface UpdateItemParams<T extends {} = Record<string, any>> {
         string,
         number | Set<string> | Array<string> | Set<number> | Array<number>
     >; // add to a set (legacy - consider using increment/decrement for numbers)
-    delete?: Record<string, Set<string> | Array<string>>; // delete from a set
+    delete?: Record<
+        string,
+        Set<string> | Array<string> | Set<number> | Array<number>
+    >; // delete from a set
     listAppend?: Record<string, Array<any>>; // append to a list
     setIfNotExists?: Partial<T>; // set if it doesn't exist
     increment?: Record<string, number>; // increment numeric values using SET expressions
