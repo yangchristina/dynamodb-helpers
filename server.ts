@@ -511,7 +511,7 @@ const createDynamoDBHelpers = (
         ]
             .filter(Boolean)
             .join(" ");
-        const params: any = {
+        const params: UpdateCommandInput = {
             TableName,
             Key,
             UpdateExpression,
