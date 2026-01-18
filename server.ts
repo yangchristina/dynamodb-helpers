@@ -382,8 +382,6 @@ const createDynamoDBHelpers = (
         TableName: string,
         options?: Omit<ScanCommandInput, "TableName">
     ) => {
-        if (process.env.NODE_ENV !== "development")
-            throw new Error("HOW DARE YOU SCAN MY TABLE");
         let items: any[] = [];
         try {
             let LastEvaluatedKey: Record<string, any> | undefined;
